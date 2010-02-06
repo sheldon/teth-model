@@ -1,8 +1,13 @@
 <?php
 class TethCollection implements Iterator, ArrayAccess, Countable {
+  public $model;
   public $collection;
   public $position = 0;
-  public $model = "TethModel";
+
+  function __construct($collection = null, $model = "TethModel"){
+    $this->model = $model;
+    $this->collection = $collection;
+  }
 
   //Iterator methods
   public function rewind(){ $this->position = 0; }
@@ -18,5 +23,5 @@ class TethCollection implements Iterator, ArrayAccess, Countable {
   public function offsetGet($offset){ return $this->offsetExists($offset) ? new $this->model($this->collection[$offset]) : null; }
 
   //Countable method
-  public function count(){ return count($collection); }
+  public function count(){ return count($this->collection); }
 }?>
