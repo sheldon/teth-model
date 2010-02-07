@@ -27,7 +27,7 @@ class TethStorage implements Iterator, ArrayAccess, Countable {
     return $this;
   }
   
-  public remove_filter($field, $value=null, $operator=null){
+  public function remove_filter($field, $value=null, $operator=null){
     foreach($this->filters as $key => $filter){
       if($filter['field'] == $field)
         if(
@@ -36,6 +36,7 @@ class TethStorage implements Iterator, ArrayAccess, Countable {
           ($filter['value'] == $value && $filter['operator'] == $operator)
         ) unset($this->filters[$key]);
     }
+    return $this;
   }
   
   public function all(){
