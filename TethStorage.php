@@ -49,41 +49,43 @@ class TethStorage implements Iterator, ArrayAccess, Countable {
   }
 
   public function or_operation($filter, $row){
-    
+    $max_num = max(count($filter['field']),count($filter['value']),count($filter['operator']));
+    foreach(array("field","value","operator") as $j){
+      $new_filter[$j] = false;
+      if(!is_array($filter[$j])) $filter[$j] = array($filter[$j]);
+    }
+    for ($i=0; $i < $max_num; $i++) {
+      foreach(array("field","value","operator") as $j)
+        if($filter[$j][$i]) $new_filter[$j] = $filter[$j][$i];
+      if($this->filter_match($new_filter,$row)) return true;
+    }
   }
 
-  public function and_operation($filter, $row){
+  public function filter_match($filter, $row){
     $left = $row[$filter["field"]];
     $right = $filter["value"];
     $mapped = $this->operators[$filter["operator"]];
-    echo "\nL: $left $filter[operator] $right is ";
     if($mapped && method_exists($this,$mapped)){
-      if($this->{$mapped}($left, $right)){
-        echo "TRUE\n";
-        return true;
-      }
+      if($this->{$mapped}($left, $right)) return true;
     }else{
       if(!($operator = $mapped)) $operator = $filter["operator"];
-      if(eval("return \$left $operator \$right;")){
-        echo "TRUE\n";return true;
-      }
+      if(eval("return \$left $operator \$right;")) return true;
     }
-    echo "FALSE\n";
-    return false;
   }
   
   public function all(){
     $class = get_class($this);
     foreach($class::$data as $row){
-      $and = $or = false;
       foreach($this->filters as $filter){
-        if(!$and = $this->and_operation($filter, $row)) break 1;
+        if(is_array($filter["field"]) || is_array($filter["value"]) || is_array($filter["operator"])){
+          if(!$this->or_operation($filter, $row)) continue 2;
+        }else{
+          if(!$this->filter_match($filter, $row)) continue 2;
+        }
         
       }
-      if($and) $ret[] = $row;
-      echo "\n=== end ==\n";
+      $ret[] = $row;
     }
-    echo "\n=== end func ===\n";
     $this->collection = $ret;
     return $this;
   }
