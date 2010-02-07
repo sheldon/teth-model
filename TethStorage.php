@@ -56,27 +56,34 @@ class TethStorage implements Iterator, ArrayAccess, Countable {
     $left = $row[$filter["field"]];
     $right = $filter["value"];
     $mapped = $this->operators[$filter["operator"]];
+    echo "\nL: $left $filter[operator] $right is ";
     if($mapped && method_exists($this,$mapped)){
-      if($this->{$mapped}($left, $right)) return true;
+      if($this->{$mapped}($left, $right)){
+        echo "TRUE\n";
+        return true;
+      }
     }else{
       if(!($operator = $mapped)) $operator = $filter["operator"];
-      if(eval("return \$left $operator \$right;")) return true;
+      if(eval("return \$left $operator \$right;")){
+        echo "TRUE\n";return true;
+      }
     }
+    echo "FALSE\n";
+    return false;
   }
   
   public function all(){
     $class = get_class($this);
     foreach($class::$data as $row){
+      $and = $or = false;
       foreach($this->filters as $filter){
-        print_r($row);
-        // if(is_array($filter["field"]) || is_array($filter["value"]) || is_array($filter["operator"])){
-        //   if(!$this->or_operation($filter, $row)) break 2;
-        // }else{
-          if(!$this->and_operation($filter, $row)) break 2;
-        // }
+        if(!$and = $this->and_operation($filter, $row)) break 1;
+        
       }
-      $ret[] = $row;
+      if($and) $ret[] = $row;
+      echo "\n=== end ==\n";
     }
+    echo "\n=== end func ===\n";
     $this->collection = $ret;
     return $this;
   }
