@@ -3,6 +3,11 @@ class TethStorage implements Iterator, ArrayAccess, Countable {
   public static $data;
   public $collection;
   public $position = 0;
+  public $operators = array(
+    "="=>"==",
+    "~"=>"regex_filter",
+    "%"=>"substring_filter"
+  );
 
   function __construct($collection = null){ $this->collection = $collection; }
   
@@ -41,16 +46,35 @@ class TethStorage implements Iterator, ArrayAccess, Countable {
     }
     return $this;
   }
+
+  public function or_operation($filter, $row){
+    
+  }
+
+  public function and_operation($filter, $row){
+    $left = $row[$filter["field"]];
+    $right = $filter["value"];
+    $mapped = $this->operators[$filter["operator"]];
+    if($mapped && method_exists($this,$mapped)){
+      if($this->{$mapped}($left, $right)) return true;
+    }else{
+      if(!($operator = $mapped)) $operator = $filter["operator"];
+      if(eval("return \$left $operator \$right;")) return true;
+    }
+  }
   
   public function all(){
     $class = get_class($this);
     foreach($class::$data as $row){
       foreach($this->filters as $filter){
-        $left = $row[$filter["field"]];
-        $right = $filter["value"];
-        $operator = $filter["operator"];
-        if(eval("return \$left $operator \$right;")) $ret[] = $row;
+        print_r($row);
+        // if(is_array($filter["field"]) || is_array($filter["value"]) || is_array($filter["operator"])){
+        //   if(!$this->or_operation($filter, $row)) break 2;
+        // }else{
+          if(!$this->and_operation($filter, $row)) break 2;
+        // }
       }
+      $ret[] = $row;
     }
     $this->collection = $ret;
     return $this;
