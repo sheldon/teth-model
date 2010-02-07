@@ -5,13 +5,6 @@ class TethCollection implements Iterator, ArrayAccess, Countable {
 
   function __construct($collection = null){ $this->collection = $collection; }
 
-  public static function get(){
-    $class = get_called_class();
-    $obj = new $class;
-    if(func_num_args() > 0) $obj->collection = func_get_arg(0);
-    return $obj;
-  }
-
   //Iterator methods
   public function rewind(){ $this->position = 0; }
   public function current(){ return $this->offsetGet($this->position); }
