@@ -43,7 +43,17 @@ class TethStorage implements Iterator, ArrayAccess, Countable {
   }
   
   public function all(){
-    
+    $class = get_class($this);
+    foreach($class::$data as $row){
+      foreach($this->filters as $filter){
+        $left = $row[$filter["field"]];
+        $right = $filter["value"];
+        $operator = $filter["operator"];
+        if(eval("return \$left $operator \$right;")) $ret[] = $row;
+      }
+    }
+    $this->collection = $ret;
+    return $this;
   }
 
   //Iterator methods
