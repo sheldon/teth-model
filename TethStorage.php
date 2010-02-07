@@ -26,6 +26,21 @@ class TethStorage implements Iterator, ArrayAccess, Countable {
     else $this->filters[] = array("field"=>$field, "value"=>$value, "operator"=>$operator);
     return $this;
   }
+  
+  public remove_filter($field, $value=null, $operator=null){
+    foreach($this->filters as $key => $filter){
+      if($filter['field'] == $field)
+        if(
+          ($value == null && $operator == null) ||
+          ($filter['value'] == $value && $operator == null) ||
+          ($filter['value'] == $value && $filter['operator'] == $operator)
+        ) unset($this->filters[$key]);
+    }
+  }
+  
+  public function all(){
+    
+  }
 
   //Iterator methods
   public function rewind(){ $this->position = 0; }
