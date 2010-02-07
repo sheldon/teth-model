@@ -21,8 +21,9 @@ class TethStorage implements Iterator, ArrayAccess, Countable {
   }
   
   //Data access methods
-  public function filter($field, $value, $operator="="){
-    $this->filters[] = array($field, $value, $operator);
+  public function filter($field, $value=null, $operator="="){
+    if($field instanceof TethModel) $this->filters[] = array("field"=>"teth_class", "value"=>get_class($field), "operator"=>"=");
+    else $this->filters[] = array("field"=>$field, "value"=>$value, "operator"=>$operator);
     return $this;
   }
 
