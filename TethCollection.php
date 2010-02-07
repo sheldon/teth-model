@@ -14,7 +14,7 @@ class TethCollection implements Iterator, ArrayAccess, Countable {
 
   //Iterator methods
   public function rewind(){ $this->position = 0; }
-  public function current(){ $this->offsetGet($this->position); }
+  public function current(){ return $this->offsetGet($this->position); }
   public function key(){ return $this->position; }
   public function next(){ ++$this->position; }
   public function valid(){ return isset($this->collection[$this->position]); }
