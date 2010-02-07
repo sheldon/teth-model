@@ -16,7 +16,10 @@ class TethStorage implements Iterator, ArrayAccess, Countable {
 
   public static function save($data){
     $class = get_called_class();
-    if($data instanceof TethModel) $data = $data->data;
+    if($data instanceof TethModel){
+      $data->data["teth_class"] = get_class($data);
+      $data = $data->data;
+    }
     $class::$data[] = $data;
   }
   
