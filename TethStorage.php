@@ -3,6 +3,7 @@ class TethStorage implements Iterator, ArrayAccess, Countable {
   public static $data;
   public $collection;
   public $position = 0;
+  public $filters= array();
   public $operators = array(
     "="=>"==",
     "~"=>"regex_filter",
