@@ -3,7 +3,8 @@ class TethStorage implements Iterator, ArrayAccess, Countable {
   public static $data;
   public $collection;
   public $position = 0;
-
+  public $filters= array();
+  
   function __construct($collection = null){ $this->collection = $collection; }
   
   //Static methods
