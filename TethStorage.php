@@ -1,6 +1,6 @@
 <?php
 class TethStorage implements Iterator, ArrayAccess, Countable {
-  public static $data;
+  public static $data = array();
   public $collection;
   public $position = 0;
   public $filters= array();
