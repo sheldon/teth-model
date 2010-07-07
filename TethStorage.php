@@ -30,7 +30,7 @@ class TethStorage implements Iterator, ArrayAccess, Countable {
 			}
 			$class::$data[] = $data;
 		}
-		return self;    
+		return self::get();    
   }
 
   
