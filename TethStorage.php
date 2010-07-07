@@ -99,6 +99,15 @@ class TethStorage implements Iterator, ArrayAccess, Countable {
     return $this;
   }
 
+	public function delete(){
+		$class = get_class($this);
+		$all = $this->all()->collection;
+		foreach($class::$data as $k=>$row) foreach($all as $i=>$v) if($v == $row) unset($class::$data[$k]);
+		//delete has removed all items matching the filters, so same as an empty array
+		$this->collection = array();
+		return $this;
+	}
+	
   //Iterator methods
   public function rewind(){ $this->position = 0; }
   public function current(){ return $this->offsetGet($this->position); }
