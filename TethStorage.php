@@ -20,14 +20,19 @@ class TethStorage implements Iterator, ArrayAccess, Countable {
     return $obj;
   }
 
-  public static function save($data){
+  public static function save(){
     $class = get_called_class();
-    if($data instanceof TethModel){
-      $data->data["teth_class"] = get_class($data);
-      $data = $data->data;
-    }
-    $class::$data[] = $data;
+		$args = func_get_args();
+		foreach((array)$args as $data){
+    	if($data instanceof TethModel){
+      	$data->data["teth_class"] = get_class($data);
+      	$data = $data->data;
+			}
+			$class::$data[] = $data;
+		}
+		return self;    
   }
+
   
   //Data access methods
   public function filter($field, $value=null, $operator="="){
